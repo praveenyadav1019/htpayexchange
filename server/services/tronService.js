@@ -1,16 +1,7 @@
 import crypto from "crypto";
-import TronWebPkg from "tronweb";
+import { TronWeb } from "tronweb";
 
-// ✅ SAFE constructor resolution for Node 18/20/22
-const TronWeb =
-  typeof TronWebPkg === "function"
-    ? TronWebPkg
-    : TronWebPkg.default;
-
-if (!TronWeb) {
-  throw new Error("TronWeb constructor not found");
-}
-
+// ✅ TronWeb v6+ requires named import
 const tronWeb = new TronWeb({
   fullHost: "https://api.trongrid.io",
   headers: {
@@ -35,6 +26,6 @@ export const generateUserWallet = async () => {
 };
 
 export const getUSDTBalance = async (address) => {
-  // Placeholder until TRC20 scan logic is implemented
+  // TODO: implement TRC20 scan via TronGrid
   return 0;
 };
