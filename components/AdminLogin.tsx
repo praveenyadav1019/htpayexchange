@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ShieldAlert, Loader2, Lock, Info } from 'lucide-react';
 import { api } from '../services/api';
@@ -17,14 +16,37 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
-      // Small artificial delay to mimic network latency in simulation
+      console.log('[UI] Attempting Secure Admin Login...');
+      
+      // 1. Call the admin login endpoint
+      // Note: Ensure your api service is configured to hit /api/admin/login
       const data = await api.admin.post('/login', { email, password });
-      console.log('[UI] Admin Login Successful, triggering success callback');
-      onLoginSuccess(data);
+
+      // 2. CRITICAL SECURITY CHECK: Verify Role
+      // This prevents the "Loading Loop" caused by a standard user trying to access the admin panel
+      if (data && data.token && data.user && data.user.role === 'admin') {
+        console.log('[UI] Admin Verification Successful');
+        
+        // 3. Save to LocalStorage immediately to sync with ProtectedRoutes
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // 4. Trigger the success callback to redirect
+        onLoginSuccess(data);
+      } else {
+        // If the server returned data but the role is not 'admin'
+        console.warn('[UI] Access Denied: Insufficient Permissions');
+        setError('ACCESS DENIED: This account does not have Administrative privileges.');
+        setLoading(false);
+      }
     } catch (err: any) {
-      console.error('[UI] Admin Login Error:', err.message);
-      setError(err.message || 'Access Denied: Invalid Administrative Credentials');
+      console.error('[UI] Admin Login Error:', err);
+      
+      // Handle specific error messages from the server
+      const errorMessage = err.response?.data?.message || err.message || 'Access Denied: Invalid Administrative Credentials';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -45,7 +67,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
 
         <form onSubmit={handleAdminLogin} className="space-y-6">
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs font-bold uppercase tracking-wider text-center animate-shake">
+            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-[11px] font-bold uppercase tracking-wider text-center animate-bounce">
               {error}
             </div>
           )}
@@ -84,15 +106,26 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             disabled={loading}
             className="w-full bg-red-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-red-700 transition-all flex items-center justify-center space-x-2 active:scale-95 disabled:opacity-50"
           >
-            {loading ? <Loader2 className="animate-spin" size={18} /> : <span>Execute Secure Login</span>}
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <Loader2 className="animate-spin" size={18} />
+                <span>Verifying...</span>
+              </div>
+            ) : (
+              <span>Execute Secure Login</span>
+            )}
           </button>
         </form>
         
         <div className="mt-8 p-4 bg-slate-800/40 rounded-xl border border-white/5 flex items-start space-x-3">
-          <Info size={14} className="text-slate-500 mt-0.5" />
+          <div className="mt-0.5">
+            <Info size={14} className="text-red-500" />
+          </div>
           <div className="space-y-1">
-             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Authorized Credentials:</p>
-             <p className="text-[10px] text-slate-500 font-mono">admin@htpay.io / admin123</p>
+             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">System Note:</p>
+             <p className="text-[10px] text-slate-500 leading-relaxed">
+               Ensure your account is flagged with <span className="text-red-400 font-bold">role: "admin"</span> in the database to gain entry.
+             </p>
           </div>
         </div>
       </div>
