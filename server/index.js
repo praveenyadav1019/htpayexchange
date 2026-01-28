@@ -32,6 +32,13 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "HTPAY Exchange API",
+    time: new Date().toISOString()
+  });
+});
 
 /* =========================
    Routes
