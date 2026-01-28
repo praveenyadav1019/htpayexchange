@@ -1,24 +1,48 @@
-<<<<<<< HEAD
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+  <img width="1200" height="475" alt="HTPay Exchange Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# HTPay Exchange
 
-This contains everything you need to run your app locally.
+HTPay Exchange is an **INR ⇄ USDT payment swapping platform** with a user dashboard and a separate admin management system.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1O1Xvnf5__qnHMbofbzb_ifsvdQhZ1uu-
+---
 
-## Run Locally
+## 🚀 Features
 
-**Prerequisites:**  Node.js
+### User
+- Unique TRC20 USDT deposit address per user
+- USDT deposit tracking
+- INR withdrawal to linked bank accounts
+- Wallet balance & transaction history
+- Secure authentication
 
+### Admin
+- Separate admin login & dashboard
+- Approve / reject deposits and withdrawals
+- Exchange rate management
+- User account control
+- Ledger & audit logs
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-=======
-# htpayexchange
->>>>>>> 90f6bb5fe5fce301e8a46f7344f1a154dcc7032d
+---
+
+## 🛠 Tech Stack
+- Frontend: React / Vite
+- Backend: Node.js + Express
+- Database: MongoDB
+- Blockchain: TRON (USDT TRC20)
+- API Provider: TronGrid
+
+---
+
+## 🧪 Local Development
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- MongoDB Atlas account
+- TronGrid API key
+
+### Install & Run
+```bash
+npm install
+npm run dev

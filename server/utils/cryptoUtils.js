@@ -1,5 +1,5 @@
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-cbc';
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'htpay_secret_master_key_32_bytes_!'; 
@@ -8,7 +8,7 @@ const IV_LENGTH = 16;
 /**
  * Encrypts a string (private key)
  */
-exports.encrypt = (text) => {
+const encrypt = (text) => {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), iv);
   let encrypted = cipher.update(text);
@@ -19,7 +19,7 @@ exports.encrypt = (text) => {
 /**
  * Decrypts a string
  */
-exports.decrypt = (text) => {
+const decrypt = (text) => {
   const textParts = text.split(':');
   const iv = Buffer.from(textParts.shift(), 'hex');
   const encryptedText = Buffer.from(textParts.join(':'), 'hex');
@@ -28,3 +28,5 @@ exports.decrypt = (text) => {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 };
+
+export { encrypt, decrypt };

@@ -1,8 +1,9 @@
 
-const express = require('express');
+import express from 'express';
+import Account from '../models/Account.js';
+import { protect } from '../middleware/auth.js';
+
 const router = express.Router();
-const Account = require('../models/Account');
-const { protect } = require('../middleware/auth');
 
 // Get all accounts for logged in user
 router.get('/', protect, async (req, res) => {
@@ -27,4 +28,4 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

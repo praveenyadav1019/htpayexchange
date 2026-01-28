@@ -1,5 +1,5 @@
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const adminActionLogSchema = new mongoose.Schema({
   admin: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -19,4 +19,4 @@ const adminActionLogSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('AdminActionLog', adminActionLogSchema);
+export default mongoose.model('AdminActionLog', adminActionLogSchema);

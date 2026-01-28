@@ -1,12 +1,13 @@
 
-const express = require('express');
+import express from 'express';
+import Transaction from '../models/Transaction.js';
+import Wallet from '../models/Wallet.js';
+import ExchangeRate from '../models/ExchangeRate.js';
+import { protect } from '../middleware/auth.js';
+import { getUSDTBalance } from '../services/tronService.js';
+import mongoose from 'mongoose';
+
 const router = express.Router();
-const Transaction = require('../models/Transaction');
-const Wallet = require('../models/Wallet');
-const ExchangeRate = require('../models/ExchangeRate');
-const { protect } = require('../middleware/auth');
-const { getUSDTBalance } = require('../services/tronService');
-const mongoose = require('mongoose');
 
 /**
  * Idempotent Deposit Verification
@@ -103,4 +104,4 @@ router.get('/', protect, async (req, res) => {
   res.json(transactions);
 });
 
-module.exports = router;
+export default router;

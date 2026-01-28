@@ -1,14 +1,14 @@
 
-const express = require('express');
+import express from 'express';
+import User from '../models/User.js';
+import Wallet from '../models/Wallet.js';
+import Transaction from '../models/Transaction.js';
+import ExchangeRate from '../models/ExchangeRate.js';
+import AdminActionLog from '../models/AdminActionLog.js';
+import { protectAdmin } from '../middleware/auth.js';
+import mongoose from 'mongoose';
+
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Wallet = require('../models/Wallet');
-const Transaction = require('../models/Transaction');
-const ExchangeRate = require('../models/ExchangeRate');
-const AdminActionLog = require('../models/AdminActionLog');
-const { protectAdmin } = require('../middleware/auth');
-const mongoose = require('mongoose');
 
 router.use(protectAdmin);
 
@@ -95,4 +95,4 @@ router.get('/stats', async (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

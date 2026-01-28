@@ -1,6 +1,6 @@
 
-const TronWeb = require('tronweb');
-const { encrypt } = require('../utils/cryptoUtils');
+import TronWeb from 'tronweb';
+import { encrypt } from '../utils/cryptoUtils.js';
 
 // Hardcoded provided API key as per request
 const TRONGRID_API_KEY = 'b307f0dd-b83a-44f3-861b-bfc927983b2b';
@@ -14,7 +14,7 @@ const tronWeb = new TronWeb({
 /**
  * Generates a unique TRON wallet for a new user
  */
-exports.generateUserWallet = async () => {
+const generateUserWallet = async () => {
   try {
     const account = await tronWeb.createAccount();
     return {
@@ -30,7 +30,7 @@ exports.generateUserWallet = async () => {
 /**
  * Checks USDT balance for a specific address
  */
-exports.getUSDTBalance = async (address) => {
+const getUSDTBalance = async (address) => {
   try {
     const contract = await tronWeb.contract().at(USDT_CONTRACT_ADDRESS);
     const balance = await contract.balanceOf(address).call();
@@ -40,3 +40,5 @@ exports.getUSDTBalance = async (address) => {
     return 0;
   }
 };
+
+export { generateUserWallet, getUSDTBalance };

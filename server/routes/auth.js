@@ -1,10 +1,11 @@
 
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Wallet = require('../models/Wallet');
-const { generateUserWallet } = require('../services/tronService');
-const { protect } = require('../middleware/auth');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import Wallet from '../models/Wallet.js';
+import { generateUserWallet } from '../services/tronService.js';
+import { protect } from '../middleware/auth.js';
+
 const router = express.Router();
 
 const signToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });

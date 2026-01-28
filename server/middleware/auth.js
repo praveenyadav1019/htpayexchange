@@ -1,12 +1,12 @@
 
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 /**
  * Standard protection for authenticated users
  * Uses JWT_SECRET for standard user validation
  */
-exports.protect = async (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -34,7 +34,7 @@ exports.protect = async (req, res, next) => {
  * Dedicated protection for Admin-only routes
  * Uses JWT_ADMIN_SECRET for high-privilege validation
  */
-exports.protectAdmin = async (req, res, next) => {
+const protectAdmin = async (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -61,7 +61,7 @@ exports.protectAdmin = async (req, res, next) => {
 /**
  * Role-based restriction helper
  */
-exports.restrictTo = (...roles) => {
+const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Insufficient permissions' });
@@ -69,3 +69,5 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+export { protect, protectAdmin, restrictTo };

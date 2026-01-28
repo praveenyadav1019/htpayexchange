@@ -1,55 +1,77 @@
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
-const authRoutes = require('./routes/auth');
-const transactionRoutes = require('./routes/transactions');
-const accountRoutes = require('./routes/accounts');
-const adminRoutes = require('./routes/admin');
+// ✅ Import routes using ES modules
+import authRoutes from "./routes/auth.js";
+import transactionRoutes from "./routes/transactions.js";
+import accountRoutes from "./routes/accounts.js";
+import adminRoutes from "./routes/admin.js";
 
 const app = express();
 
-// Security Middleware
+/* =========================
+   Security Middleware
+========================= */
 app.use(helmet());
-app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '10kb' }));
+app.use(cors({ origin: "*" }));
+app.use(express.json({ limit: "10kb" }));
 
-// Rate Limiting
+/* =========================
+   Rate Limiting
+========================= */
 const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!'
+  message: "Too many requests from this IP, please try again in an hour!"
 });
-app.use('/api', limiter);
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/transactions', transactionRoutes);
-app.use('/api/accounts', accountRoutes);
-app.use('/api/admin', adminRoutes);
+app.use("/api", limiter);
 
-// Error Handling Middleware
+/* =========================
+   Routes
+========================= */
+app.use("/api/auth", authRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/accounts", accountRoutes);
+app.use("/api/admin", adminRoutes);
+
+/* =========================
+   Global Error Handler
+========================= */
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
-    status: 'error',
-    message: err.message || 'Internal Server Error'
+    status: "error",
+    message: err.message || "Internal Server Error"
   });
 });
 
+/* =========================
+   Database Connection
+========================= */
 const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI)
+if (!MONGODB_URI) {
+  console.error("❌ MONGODB_URI is missing");
+  process.exit(1);
+}
+
+mongoose
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log('HTPAY Database Connected');
+    console.log("✅ HTPAY Database Connected");
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`Fintech Server running on port ${PORT}`));
+    app.listen(PORT, () =>
+      console.log(`🚀 Fintech Server running on port ${PORT}`)
+    );
   })
-  .catch(err => {
-    console.error('Database connection failed:', err);
+  .catch((err) => {
+    console.error("❌ Database connection failed:", err);
     process.exit(1);
   });

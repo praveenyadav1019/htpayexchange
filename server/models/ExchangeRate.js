@@ -1,5 +1,5 @@
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const exchangeRateSchema = new mongoose.Schema({
   buyRate: { type: Number, default: 98.37 }, // USDT to INR (User sells USDT)
@@ -8,4 +8,4 @@ const exchangeRateSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('ExchangeRate', exchangeRateSchema);
+export default mongoose.model('ExchangeRate', exchangeRateSchema);
