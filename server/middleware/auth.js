@@ -6,7 +6,7 @@ import User from '../models/User.js';
  * Standard protection for authenticated users
  * Uses JWT_SECRET for standard user validation
  */
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -34,7 +34,7 @@ const protect = async (req, res, next) => {
  * Dedicated protection for Admin-only routes
  * Uses JWT_ADMIN_SECRET for high-privilege validation
  */
-const protectAdmin = async (req, res, next) => {
+export const protectAdmin = async (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -61,7 +61,7 @@ const protectAdmin = async (req, res, next) => {
 /**
  * Role-based restriction helper
  */
-const restrictTo = (...roles) => {
+export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Insufficient permissions' });
@@ -69,5 +69,3 @@ const restrictTo = (...roles) => {
     next();
   };
 };
-
-export { protect, protectAdmin, restrictTo };

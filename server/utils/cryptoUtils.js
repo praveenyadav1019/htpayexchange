@@ -8,7 +8,7 @@ const IV_LENGTH = 16;
 /**
  * Encrypts a string (private key)
  */
-const encrypt = (text) => {
+export const encrypt = (text) => {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), iv);
   let encrypted = cipher.update(text);
@@ -19,7 +19,7 @@ const encrypt = (text) => {
 /**
  * Decrypts a string
  */
-const decrypt = (text) => {
+export const decrypt = (text) => {
   const textParts = text.split(':');
   const iv = Buffer.from(textParts.shift(), 'hex');
   const encryptedText = Buffer.from(textParts.join(':'), 'hex');
@@ -28,5 +28,3 @@ const decrypt = (text) => {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 };
-
-export { encrypt, decrypt };
