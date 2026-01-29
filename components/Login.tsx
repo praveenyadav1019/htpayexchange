@@ -16,30 +16,45 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
-      const body = isLogin ? { email, password } : { name, email, password };
-      
-      const data = await api.user.post(endpoint, body);
-      
-      if (data && data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        onLoginSuccess(data);
-      } else {
-        setError(data.message || 'Invalid credentials');
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Authentication failed');
-    } finally {
-      setLoading(false);
+  try {
+    // 1. Determine correct endpoint
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+    
+    // 2. Build the body based on mode
+    const body = isLogin 
+      ? { email, password } 
+      : { name, email, password }; // Ensure 'name' is included for signup
+
+    console.log(`Sending request to ${endpoint}`, body);
+
+    const data = await api.user.post(endpoint, body);
+
+    if (data && data.token) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      onLoginSuccess(data);
+    } else {
+      // If server returns an error message, show it specifically
+      setError(data.message || 'Authentication failed');
     }
-  };
+  } catch (err: any) {
+    // This catches 400/401/500 errors from the server
+    const serverMessage = err.response?.data?.message;
+    const errorMessage = isLogin 
+      ? (serverMessage || 'Invalid email or password') 
+      : (serverMessage || 'Signup failed. Email might already exist.');
+    
+    setError(errorMessage);
+    console.error('Auth Error:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
